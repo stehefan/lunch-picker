@@ -18,13 +18,15 @@ function App() {
     zoom: parseInt(import.meta.env.VITE_MAPS_ZOOM || "15"),
     mapId: import.meta.env.VITE_GOOGLE_MAPS_MAP_ID!
   };
+  const places = import.meta.env.VITE_PLACE_IDS!.split(',');
 
   Promise
     .all([
       loader.importLibrary("maps"),
-      loader.importLibrary("marker")
+      loader.importLibrary("marker"),
+      loader.importLibrary("places")
     ])
-    .then(([mapsLibrary, markerLibrary]) => {
+    .then(([mapsLibrary, markerLibrary, placesLibrary]) => {
       const mapElement: HTMLElement = document.getElementById('map')!;
       const map = new mapsLibrary.Map(mapElement, mapOptions);
 
@@ -37,6 +39,32 @@ function App() {
         title: "Center",
         content: logoElement,
       });
+
+      const placesService = new placesLibrary.PlacesService(map);
+      for (const placeId of places) {
+        placesService.getDetails(
+          {
+            placeId: placeId,
+          },
+          (place, status) => {
+            if (place && status === placesLibrary.PlacesServiceStatus.OK) {
+              const pinElement = new markerLibrary.PinElement({
+                background: place.icon_background_color,
+                glyph: new URL(`${String(place.icon_mask_base_uri)}.svg`),
+              });
+
+              console.log(place.icon_mask_base_uri);
+
+              new markerLibrary.AdvancedMarkerElement({
+                position: place.geometry?.location,
+                map: map,
+                title: place.name,
+                content: pinElement.element,
+              });
+
+            }
+          });
+      }
     });
 
   return (
