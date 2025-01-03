@@ -2,11 +2,8 @@ import { Loader } from '@googlemaps/js-api-loader';
 import './App.css';
 
 function App() {
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY!;
-
-  console.log(apiKey);
   const loader = new Loader({
-    apiKey: apiKey,
+    apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY!,
     version: "weekly",
     libraries: ["places"]
   });
