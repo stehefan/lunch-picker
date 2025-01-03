@@ -1,33 +1,37 @@
-import './App.css'
-
-import type { LatLngTuple } from 'leaflet'
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-import { Icon } from 'leaflet'
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon1x from 'leaflet/dist/images/marker-icon.png';
+import { Loader } from '@googlemaps/js-api-loader';
+import './App.css';
 
 function App() {
-  const position: LatLngTuple = [53.5502, 9.9920]
-  const markerIcon = new Icon({
-    iconUrl: markerIcon1x,
-    iconRetinaUrl: markerIcon2x,
-    iconSize: [25, 41],
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY!;
+
+  console.log(apiKey);
+  const loader = new Loader({
+    apiKey: apiKey,
+    version: "weekly",
+    libraries: ["places"]
   });
+
+  const mapOptions = {
+    center: {
+      lat: 53.5502,
+      lng: 9.9920
+    },
+    zoom: 15
+  };
+
+  loader
+    .importLibrary('maps')
+    .then(({ Map }) => {
+      new Map(document.getElementById("map") as HTMLElement, mapOptions);
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 
   return (
     <>
       <h1>Lunch Picker</h1>
-      <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Marker position={position} icon={markerIcon}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-      </MapContainer>
+      <div id='map' className='map'></div>
     </>
   )
 }
