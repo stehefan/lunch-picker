@@ -3,3 +3,20 @@
   max-width: 800px;
   width: 100%;
 }
+
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.tag {
+  font-size: 1rem;
+  cursor: pointer;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+}

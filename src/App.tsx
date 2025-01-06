@@ -1,6 +1,15 @@
-import { Loader } from '@googlemaps/js-api-loader';
-import './App.css';
+import restaurants from '../data/restaurants.json';
 import * as logo from '../public/logo.svg';
+import './App.css';
+
+import { Loader } from '@googlemaps/js-api-loader';
+import { generateTagColors } from './utils/color';
+
+const uniqueTags = [...new Set(restaurants.flatMap(restaurant => restaurant.tags))];
+const uniqueColors = generateTagColors(uniqueTags.length);
+const tagColors = Object.fromEntries(
+  uniqueTags.map((tag, index) => [tag, uniqueColors[index]])
+);
 
 function App() {
   const loader = new Loader({
@@ -18,15 +27,13 @@ function App() {
     zoom: parseInt(import.meta.env.VITE_MAPS_ZOOM || "15"),
     mapId: import.meta.env.VITE_GOOGLE_MAPS_MAP_ID!
   };
-  const places = import.meta.env.VITE_PLACE_IDS!.split(',');
 
   Promise
     .all([
       loader.importLibrary("maps"),
-      loader.importLibrary("marker"),
-      loader.importLibrary("places")
+      loader.importLibrary("marker")
     ])
-    .then(([mapsLibrary, markerLibrary, placesLibrary]) => {
+    .then(([mapsLibrary, markerLibrary]) => {
       const mapElement: HTMLElement = document.getElementById('map')!;
       const map = new mapsLibrary.Map(mapElement, mapOptions);
 
@@ -40,36 +47,30 @@ function App() {
         content: logoElement,
       });
 
-      const placesService = new placesLibrary.PlacesService(map);
-      for (const placeId of places) {
-        placesService.getDetails(
-          {
-            placeId: placeId,
-          },
-          (place, status) => {
-            if (place && status === placesLibrary.PlacesServiceStatus.OK) {
-              const pinElement = new markerLibrary.PinElement({
-                background: place.icon_background_color,
-                glyph: new URL(`${String(place.icon_mask_base_uri)}.svg`),
-              });
+      for (const restaurant of restaurants) {
+        const restaurantPinElement = new markerLibrary.PinElement({
+          background: '#FBBC04',
+        });
 
-              console.log(place.icon_mask_base_uri);
-
-              new markerLibrary.AdvancedMarkerElement({
-                position: place.geometry?.location,
-                map: map,
-                title: place.name,
-                content: pinElement.element,
-              });
-
-            }
-          });
+        new markerLibrary.AdvancedMarkerElement({
+          position: restaurant.location,
+          map: map,
+          title: restaurant.name,
+          content: restaurantPinElement.element,
+        });
       }
     });
 
   return (
     <>
       <h1>Lunch Picker</h1>
+      <div className='tag-container'>
+        {uniqueTags.map((tag, index) => (
+          <button key={`tag-${index}`} className='tag' style={{ backgroundColor: tagColors[tag] }}>
+            {tag}
+          </button>
+        ))}
+      </div>
       <div id='map' className='map'></div>
     </>
   )
