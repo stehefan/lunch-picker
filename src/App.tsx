@@ -5,11 +5,19 @@ import './App.css';
 import { Loader } from '@googlemaps/js-api-loader';
 import { generateTagColors } from './utils/color';
 
+const BASE_ZOOM = parseInt(import.meta.env.VITE_MAPS_ZOOM || "15");
 const uniqueTags = [...new Set(restaurants.flatMap(restaurant => restaurant.tags))];
 const uniqueColors = generateTagColors(uniqueTags.length);
 const tagColors = Object.fromEntries(
   uniqueTags.map((tag, index) => [tag, uniqueColors[index]])
 );
+
+function MarkerTag({ title }: { title: string }) {
+  const markerTag = document.createElement('div');
+  markerTag.className = 'map-tag';
+  markerTag.textContent = title;
+  return markerTag;
+}
 
 function App() {
   const loader = new Loader({
@@ -22,11 +30,6 @@ function App() {
     lat: parseFloat(lat),
     lng: parseFloat(lng)
   };
-  const mapOptions = {
-    center: centerCoordinates,
-    zoom: parseInt(import.meta.env.VITE_MAPS_ZOOM || "15"),
-    mapId: import.meta.env.VITE_GOOGLE_MAPS_MAP_ID!
-  };
 
   Promise
     .all([
@@ -34,9 +37,22 @@ function App() {
       loader.importLibrary("marker")
     ])
     .then(([mapsLibrary, markerLibrary]) => {
+      const mapOptions = {
+        center: centerCoordinates,
+        zoom: BASE_ZOOM,
+        mapId: import.meta.env.VITE_GOOGLE_MAPS_MAP_ID!,
+        fullscreenControl: false,
+        streetViewControl: false,
+        mapTypeControl: false,
+        scaleControl: true,
+        render: 'svg',
+        maxZoom: 18,
+        minZoom: 14,
+        renderingType: mapsLibrary.RenderingType.VECTOR,
+      };
+
       const mapElement: HTMLElement = document.getElementById('map')!;
       const map = new mapsLibrary.Map(mapElement, mapOptions);
-
       const logoElement = document.createElement('img');
       logoElement.src = logo.default;
 
@@ -48,15 +64,11 @@ function App() {
       });
 
       for (const restaurant of restaurants) {
-        const restaurantPinElement = new markerLibrary.PinElement({
-          background: '#FBBC04',
-        });
-
         new markerLibrary.AdvancedMarkerElement({
           position: restaurant.location,
           map: map,
           title: restaurant.name,
-          content: restaurantPinElement.element,
+          content: MarkerTag({ title: restaurant.name }),
         });
       }
     });

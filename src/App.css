@@ -1,4 +1,5 @@
 .map {
+  color: black;
   height: 400px;
   max-width: 800px;
   width: 100%;
@@ -19,4 +20,26 @@
   padding: 5px 10px;
   border-radius: 5px;
   border: none;
+}
+
+
+.map-tag {
+  background-color: #8298ba;
+  border-radius: 8px;
+  color: #FFFFFF;
+  padding: 5px 8px;
+  position: relative;
+}
+
+.map-tag::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, 0);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #8298ba;
 }
