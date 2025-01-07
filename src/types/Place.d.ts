@@ -1,6 +1,7 @@
 export type Place = {
     name: string;
     tags: string[]
+    placeId: string;
     address: Address;
     location: Location;
 };
