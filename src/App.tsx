@@ -1,5 +1,6 @@
 import restaurants from '../data/restaurants.json';
 import './App.css';
+import logo from './assets/logo.svg';
 
 import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
 import { generateTagColors } from './utils/color';
@@ -38,6 +39,9 @@ function App() {
       </div>
       <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}>
         <Map className='map' reuseMaps defaultCenter={centerCoordinates} defaultZoom={BASE_ZOOM} maxZoom={17} minZoom={14} mapId={import.meta.env.VITE_GOOGLE_MAPS_MAP_ID}>
+          <AdvancedMarker position={centerCoordinates} title='Work Location'>
+            <img src={logo} alt='Lunch Picker' />
+          </AdvancedMarker>
           {restaurants.map((restaurant, index) => (
             <AdvancedMarker key={`marker-${index}`} position={restaurant.location} title={restaurant.name} >
               <MarkerTag title={restaurant.name} />
