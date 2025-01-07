@@ -1,88 +1,51 @@
 import restaurants from '../data/restaurants.json';
-import './App.css';
 import logo from './assets/logo.svg';
+import './App.css';
 
-import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
 import { useState } from 'react';
+import { LunchMap } from './components/LunchMap/LunchMap';
+import { TagList } from './components/TagList/TagList';
 import { generateTagColors } from './utils/color';
-
-const BASE_ZOOM = parseInt(import.meta.env.VITE_MAPS_ZOOM || "15");
+import { Location } from './types/Place';
+const zoomSettings = {
+  default: parseInt(import.meta.env.VITE_MAPS_ZOOM || "15"),
+  min: 14,
+  max: 17
+}
 const uniqueTags = [...new Set(restaurants.flatMap(restaurant => restaurant.tags))];
 const uniqueColors = generateTagColors(uniqueTags.length);
 const tagColors: Record<string, string> = Object.fromEntries(
   uniqueTags.map((tag, index) => [tag, uniqueColors[index]])
 );
 
-function MarkerTag({ title, tags }: { title: string, tags: Record<string, string> }) {
-  return (
-    <div className='map-tag'>
-      <span className='map-tag--tags'>
-        {Object.entries(tags).map(([tag, color], index) => (
-          <span title={tag} key={`tag-${index}`} className='map-tag--tag' style={{ backgroundColor: color }}></span>
-        ))}
-      </span>
-      <span className='map-tag--title'>{title}</span>
-    </div>
-  )
-}
-
 function App() {
   const [selectedTags, setSelectedTags] = useState<string[]>(uniqueTags);
   const [lat, lng] = import.meta.env.VITE_MAPS_COORDINATES!.split(',');
-  const centerCoordinates = {
+  const centerCoordinates: Location = {
     lat: parseFloat(lat),
     lng: parseFloat(lng)
   };
 
   const handleTagChange = (tag: string) => {
-    setSelectedTags((prev: string[]) =>
-      prev.includes(tag)
-        ? prev.filter((t: string) => t !== tag)
-        : [...prev, tag]
-    );
+    const updatedSelectedTags = selectedTags.includes(tag)
+      ? selectedTags.filter((t: string) => t !== tag)
+      : [...selectedTags, tag];
+
+    setSelectedTags(updatedSelectedTags);
   };
 
   return (
     <>
       <h1>Lunch Picker</h1>
-      <div className='tag-container'>
-        {uniqueTags.map((tag, index) => {
-          const isSelected = selectedTags.includes(tag);
-
-          return (
-            <label
-              key={`tag-${index}`}
-              className='tag'
-              style={{
-                backgroundColor: tagColors[tag]
-              }}
-            >
-              {tag}
-              <input
-                disabled={selectedTags.length === 1 && isSelected}
-                type='checkbox'
-                id={`tag-${index}`}
-                name='selected-tag'
-                value={tag}
-                checked={isSelected}
-                onChange={() => handleTagChange(tag)}
-              />
-            </label>
-          )
-        })}
-      </div>
-      <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}>
-        <Map className='map' reuseMaps defaultCenter={centerCoordinates} defaultZoom={BASE_ZOOM} maxZoom={17} minZoom={14} mapId={import.meta.env.VITE_GOOGLE_MAPS_MAP_ID}>
-          <AdvancedMarker position={centerCoordinates} title='Work Location'>
-            <img src={logo} alt='Lunch Picker' />
-          </AdvancedMarker>
-          {restaurants.filter(restaurant => selectedTags.some(tag => restaurant.tags.includes(tag))).map((restaurant, index) => (
-            <AdvancedMarker key={`marker-${index}`} position={restaurant.location} title={restaurant.name} >
-              <MarkerTag title={restaurant.name} tags={Object.fromEntries(Object.entries(tagColors).filter(([tag]) => restaurant.tags.includes(tag)))} />
-            </AdvancedMarker>
-          ))}
-        </Map>
-      </APIProvider>
+      <TagList tags={tagColors} selectedTags={selectedTags} handleTagChange={handleTagChange} />
+      <LunchMap
+        centerCoordinates={centerCoordinates}
+        zoomSettings={zoomSettings}
+        restaurants={restaurants}
+        selectedTags={selectedTags}
+        tagColors={tagColors}
+        logo={logo}
+      />
     </>
   )
 }
