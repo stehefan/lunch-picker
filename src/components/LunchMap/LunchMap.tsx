@@ -1,7 +1,7 @@
-import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
-import { MarkerTag } from "../MarkerTag/MarkerTag";
+import { AdvancedMarker, APIProvider, ColorScheme, Map } from "@vis.gl/react-google-maps";
 import { ZoomSettings } from '../../types/App';
 import { Location, Place } from '../../types/Place';
+import { MarkerTag } from "../MarkerTag/MarkerTag";
 
 interface LunchMapProps {
     centerCoordinates: Location;
@@ -15,7 +15,7 @@ interface LunchMapProps {
 export function LunchMap({ centerCoordinates, zoomSettings, restaurants, selectedTags, tagColors, logo }: LunchMapProps) {
     return (
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}>
-            <Map className='map' reuseMaps defaultCenter={centerCoordinates} defaultZoom={zoomSettings.default} maxZoom={zoomSettings.max} minZoom={zoomSettings.min} mapId={import.meta.env.VITE_GOOGLE_MAPS_MAP_ID}>
+            <Map className='map' colorScheme={ColorScheme.FOLLOW_SYSTEM} disableDefaultUI zoomControl fullscreenControl={false} reuseMaps defaultCenter={centerCoordinates} defaultZoom={zoomSettings.default} maxZoom={zoomSettings.max} minZoom={zoomSettings.min} mapId={import.meta.env.VITE_GOOGLE_MAPS_MAP_ID}>
                 <AdvancedMarker position={centerCoordinates} title='Work Location'>
                     <img src={logo} alt='Lunch Picker' />
                 </AdvancedMarker>
