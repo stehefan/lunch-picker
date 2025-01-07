@@ -1,0 +1,9 @@
+.map-slot {
+    height: 100%;
+    width: 100%;
+}
+
+.control-slot {
+    height: 100%;
+    margin: 4px;
+}

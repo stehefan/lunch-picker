@@ -1,30 +1,58 @@
+import {
+    SplitLayout
+} from '@googlemaps/extended-component-library/react';
 import { AdvancedMarker, APIProvider, ColorScheme, Map } from "@vis.gl/react-google-maps";
+import { useState } from "react";
 import { ZoomSettings } from '../../types/App';
 import { Location, Place } from '../../types/Place';
+import { generateTagColors } from '../../utils/color';
 import { MarkerTag } from "../MarkerTag/MarkerTag";
-
+import { TagList } from '../TagList/TagList';
+import './LunchMap.css';
 interface LunchMapProps {
     centerCoordinates: Location;
     zoomSettings: ZoomSettings;
     restaurants: Place[];
-    selectedTags: string[];
-    tagColors: Record<string, string>;
     logo: string;
 }
 
-export function LunchMap({ centerCoordinates, zoomSettings, restaurants, selectedTags, tagColors, logo }: LunchMapProps) {
+export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }: LunchMapProps) {
+    const uniqueTags = [...new Set(restaurants.flatMap(restaurant => restaurant.tags))];
+    const uniqueColors = generateTagColors(uniqueTags.length);
+    const tagColors: Record<string, string> = Object.fromEntries(
+        uniqueTags.map((tag, index) => [tag, uniqueColors[index]])
+    );
+
+    const [selectedTags, setSelectedTags] = useState<string[]>(uniqueTags);
+
+    const handleTagChange = (tag: string) => {
+        const updatedSelectedTags = selectedTags.includes(tag)
+            ? selectedTags.filter((t: string) => t !== tag)
+            : [...selectedTags, tag];
+
+        setSelectedTags(updatedSelectedTags);
+    };
+
     return (
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}>
-            <Map className='map' colorScheme={ColorScheme.FOLLOW_SYSTEM} disableDefaultUI zoomControl fullscreenControl={false} reuseMaps defaultCenter={centerCoordinates} defaultZoom={zoomSettings.default} maxZoom={zoomSettings.max} minZoom={zoomSettings.min} mapId={import.meta.env.VITE_GOOGLE_MAPS_MAP_ID}>
-                <AdvancedMarker position={centerCoordinates} title='Work Location'>
-                    <img src={logo} alt='Lunch Picker' />
-                </AdvancedMarker>
-                {restaurants.filter(restaurant => selectedTags.some(tag => restaurant.tags.includes(tag))).map((restaurant, index) => (
-                    <AdvancedMarker key={`marker-${index}`} position={restaurant.location} title={restaurant.name} >
-                        <MarkerTag title={restaurant.name} tags={Object.fromEntries(Object.entries(tagColors).filter(([tag]) => restaurant.tags.includes(tag)))} />
-                    </AdvancedMarker>
-                ))}
-            </Map>
-        </APIProvider>
+            <SplitLayout rowReverse rowLayoutMinWidth={700}>
+                <div className="control-slot" slot="fixed">
+                    <TagList tags={tagColors} selectedTags={selectedTags} handleTagChange={handleTagChange} />
+
+                </div>
+                <div className="map-slot" slot="main">
+                    <Map className='map' colorScheme={ColorScheme.FOLLOW_SYSTEM} disableDefaultUI zoomControl fullscreenControl={false} reuseMaps defaultCenter={centerCoordinates} defaultZoom={zoomSettings.default} maxZoom={zoomSettings.max} minZoom={zoomSettings.min} mapId={import.meta.env.VITE_GOOGLE_MAPS_MAP_ID}>
+                        <AdvancedMarker position={centerCoordinates} title='Work Location'>
+                            <img src={logo} alt='Lunch Picker' />
+                        </AdvancedMarker>
+                        {restaurants.filter(restaurant => selectedTags.some(tag => restaurant.tags.includes(tag))).map((restaurant, index) => (
+                            <AdvancedMarker key={`marker-${index}`} position={restaurant.location} title={restaurant.name} >
+                                <MarkerTag title={restaurant.name} tags={Object.fromEntries(Object.entries(tagColors).filter(([tag]) => restaurant.tags.includes(tag)))} />
+                            </AdvancedMarker>
+                        ))}
+                    </Map>
+                </div>
+            </SplitLayout >
+        </APIProvider >
     )
 }   
