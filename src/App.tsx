@@ -9,14 +9,19 @@ import { generateTagColors } from './utils/color';
 const BASE_ZOOM = parseInt(import.meta.env.VITE_MAPS_ZOOM || "15");
 const uniqueTags = [...new Set(restaurants.flatMap(restaurant => restaurant.tags))];
 const uniqueColors = generateTagColors(uniqueTags.length);
-const tagColors = Object.fromEntries(
+const tagColors: Record<string, string> = Object.fromEntries(
   uniqueTags.map((tag, index) => [tag, uniqueColors[index]])
 );
 
-function MarkerTag({ title }: { title: string }) {
+function MarkerTag({ title, tags }: { title: string, tags: Record<string, string> }) {
   return (
     <div className='map-tag'>
-      {title}
+      <span className='map-tag--tags'>
+        {Object.entries(tags).map(([tag, color], index) => (
+          <span title={tag} key={`tag-${index}`} className='map-tag--tag' style={{ backgroundColor: color }}></span>
+        ))}
+      </span>
+      <span className='map-tag--title'>{title}</span>
     </div>
   )
 }
@@ -73,7 +78,7 @@ function App() {
           </AdvancedMarker>
           {restaurants.filter(restaurant => selectedTags.some(tag => restaurant.tags.includes(tag))).map((restaurant, index) => (
             <AdvancedMarker key={`marker-${index}`} position={restaurant.location} title={restaurant.name} >
-              <MarkerTag title={restaurant.name} />
+              <MarkerTag title={restaurant.name} tags={Object.fromEntries(Object.entries(tagColors).filter(([tag]) => restaurant.tags.includes(tag)))} />
             </AdvancedMarker>
           ))}
         </Map>
