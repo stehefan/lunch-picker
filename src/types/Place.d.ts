@@ -1,4 +1,4 @@
-export type Place = {
+export type Restaurant = {
     name: string;
     tags: string[]
     placeId: string;
