@@ -2,7 +2,7 @@ import restaurants from '../data/restaurants.json';
 import './App.css';
 import logo from './assets/logo.svg';
 
-import { LunchMap } from './components/LunchMap/LunchMap';
+import { LunchMapWrapper } from './components/LunchMap/LunchMapWrapper';
 import { Location } from './types/Place';
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
   };
 
   return (
-    <LunchMap
+    <LunchMapWrapper
       centerCoordinates={centerCoordinates}
       zoomSettings={zoomSettings}
       restaurants={restaurants}
