@@ -8,41 +8,41 @@
     font-size: 1rem;
 }
 
-.name>a {
+.card-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.card-name>a {
     text-decoration: none;
     color: inherit;
 }
 
-.name>a:hover {
+.card-name>a:hover {
     text-decoration: underline;
 }
 
-.details {
+.card-details {
     display: flex;
     flex-direction: row;
     gap: 10px;
 }
 
-.details>span {
+.card-details>span {
     width: 25%;
 }
 
-.tags {
+.card-tags {
     display: flex;
     flex-direction: row;
     gap: 5px;
 }
 
-.tag {
-    padding: 0.2rem 0.5rem;
-    border: 1px solid #ccc;
+.card-tag {
+    font-size: .8rem;
+    color: white;
+    background-color: #63666a;
+    padding: 5px 10px;
     border-radius: 5px;
-    background-color: #f0f0f0;
-    font-size: 0.8rem;
-    color: #333;
-}
-
-.name {
-    font-weight: bold;
-    font-size: 1.1rem;
+    border: none;
 }

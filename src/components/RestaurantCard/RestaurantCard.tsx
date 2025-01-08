@@ -52,20 +52,20 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
     return (
         <div className='card'>
-            <span className='name'>
+            <span className='card-name'>
                 <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">{restaurant.name}</a> <small>🔗</small>
             </span>
-            <div className='details'>
-                <span className='rating'>∅ {restaurant.place?.rating}</span>
-                {priceIndicator && <span className='price'>{priceIndicator}</span>}
-                {isOpen && <span className='open-state'>{isOpen ? 'Open' : 'Closed'}</span>}
-                {opensAt && <time className='open-time' dateTime={opensAt.toISOString()}>{opensAt.toLocaleDateString()}</time>}
+            <div className='card-details'>
+                <span>∅ {restaurant.place?.rating}</span>
+                {priceIndicator && <span>{priceIndicator}</span>}
+                {isOpen && <span>{isOpen ? 'Open' : 'Closed'}</span>}
+                {opensAt && <time dateTime={opensAt.toISOString()}>{opensAt.toLocaleDateString()}</time>}
             </div>
-            <div className='tags'>
+            <div className='card-tags'>
                 {restaurant.tags.map((tag, index) => (
-                    <div key={`tag-${index}`} className='tag' >
+                    <span key={`tag-${index}`} className='card-tag' >
                         {tag}
-                    </div>
+                    </span>
                 ))}
             </div>
         </div>)
