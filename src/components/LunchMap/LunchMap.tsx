@@ -39,7 +39,9 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}>
             <SplitLayout rowReverse rowLayoutMinWidth={700}>
                 <div className="control-slot" slot="fixed">
+                    <span className='title'>What kind of food do you want?</span>
                     <TagList tags={tagColors} selectedTags={selectedTags} handleTagChange={handleTagChange} />
+                    <span className='title'>Restaurants</span>
                     <RestaurantList restaurants={shownRestaurants} />
                 </div>
                 <div className="map-slot" slot="main">

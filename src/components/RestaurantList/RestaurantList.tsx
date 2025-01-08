@@ -1,5 +1,6 @@
 import { RestaurantCard } from "../RestaurantCard/RestaurantCard";
 import { Restaurant } from "../../types/Place";
+import './RestaurantList.css';
 
 interface RestaurantListProps {
     restaurants: Restaurant[];
