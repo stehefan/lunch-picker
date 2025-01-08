@@ -21,7 +21,10 @@
     {
         "name": "Marend Tiroler Küche",
         "tags": [
-            "austrian"
+            "austrian",
+            "some",
+            "other",
+            "tag"
         ],
         "placeId": "ChIJZ92bAmuPsUcROCM8RlaF2uA",
         "location": {
