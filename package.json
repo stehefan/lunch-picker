@@ -12,6 +12,7 @@
   "dependencies": {
     "@googlemaps/extended-component-library": "^0.6.13",
     "@vis.gl/react-google-maps": "^1.4.2",
+    "jotai": "^2.11.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
