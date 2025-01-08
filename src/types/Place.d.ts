@@ -2,7 +2,6 @@ export type Restaurant = {
     name: string;
     tags: string[]
     placeId: string;
-    address: Address;
     location: Location;
     place?: google.maps.places.Place;
 };

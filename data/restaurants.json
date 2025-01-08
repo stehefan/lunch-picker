@@ -10,12 +10,6 @@
         "location": {
             "lat": 53.5594586,
             "lng": 9.9731183
-        },
-        "address": {
-            "street": "Glashüttenstraße",
-            "number": "85a",
-            "postal": "20357",
-            "city": "Hamburg"
         }
     },
     {
@@ -30,12 +24,6 @@
         "location": {
             "lat": 53.5575083,
             "lng": 9.9693306
-        },
-        "address": {
-            "street": "Feldstraße",
-            "number": "29",
-            "postal": "20357",
-            "city": "Hamburg"
         }
     }
 ]
