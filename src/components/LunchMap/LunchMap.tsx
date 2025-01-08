@@ -1,7 +1,7 @@
 import {
     SplitLayout
 } from '@googlemaps/extended-component-library/react';
-import { AdvancedMarker, ColorScheme, Map, useApiLoadingStatus, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { AdvancedMarker, ColorScheme, Map, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { ZoomSettings } from '../../types/App';
 import { Location, Restaurant } from '../../types/Place';
@@ -22,17 +22,16 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
     const [selectedTags, setSelectedTags] = useState<string[]>(uniqueTags);
     const [bounds, setBounds] = useState<google.maps.LatLngBoundsLiteral>();
     const coreLibrary: google.maps.CoreLibrary | null = useMapsLibrary('core');
-    const status = useApiLoadingStatus();
+    const [shownRestaurants, setShownRestaurants] = useState<Restaurant[]>(restaurants);
 
     useEffect(() => {
-        console.log(status);
-    }, [status]);
-
-    const shownRestaurants = restaurants.filter(restaurant => {
-        const hasSelectedTags = selectedTags.some(tag => restaurant.tags.includes(tag));
-        const isInBounds = coreLibrary && new coreLibrary.LatLngBounds(bounds).contains(restaurant.location);
-        return hasSelectedTags && isInBounds;
-    });
+        const updatedListOfRestaurants = restaurants.filter(restaurant => {
+            const hasSelectedTags = selectedTags.some(tag => restaurant.tags.includes(tag));
+            const isInBounds = coreLibrary && new coreLibrary.LatLngBounds(bounds).contains(restaurant.location);
+            return hasSelectedTags && isInBounds;
+        });
+        setShownRestaurants(updatedListOfRestaurants);
+    }, [bounds, selectedTags, restaurants, coreLibrary]);
 
     const handleTagChange = (tag: string) => {
         const updatedSelectedTags = selectedTags.includes(tag)
