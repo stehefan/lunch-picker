@@ -1,0 +1,35 @@
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.tag {
+    font-size: 1rem;
+    cursor: pointer;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    position: relative;
+    opacity: 0.5;
+    user-select: none;
+}
+
+.tag:has(input[type="checkbox"]:checked) {
+    opacity: 1;
+}
+
+.tag:has(input[type="checkbox"]:disabled) {
+    cursor: not-allowed;
+}
+
+.tag>input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}

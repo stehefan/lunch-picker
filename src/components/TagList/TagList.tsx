@@ -1,3 +1,5 @@
+import './TagList.css';
+
 export type TagListProps = {
     tags: Record<string, string>;
     selectedTags: string[];

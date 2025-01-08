@@ -7,3 +7,52 @@
     height: 100%;
     margin: 4px;
 }
+
+.map {
+    color: black;
+    height: 100%;
+    width: 100%;
+}
+
+.map-tag {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background-color: #63666a;
+    border-radius: 8px;
+    color: white;
+    padding: 5px 8px;
+    position: relative;
+}
+
+.map-tag::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, 0);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #63666a;
+}
+
+.map-tag--tags {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5px;
+}
+
+.map-tag--tag {
+    display: block;
+    width: 20px;
+    height: 6px;
+    border-radius: 8px;
+    border: 1px solid white;
+}
+
+.map-tag--title {
+    text-align: center;
+}
