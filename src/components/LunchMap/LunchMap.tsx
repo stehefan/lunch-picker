@@ -21,8 +21,8 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
     const uniqueTags = [...new Set(restaurants.flatMap(restaurant => restaurant.tags))];
     const [selectedTags, setSelectedTags] = useState<string[]>(uniqueTags);
     const [bounds, setBounds] = useState<google.maps.LatLngBoundsLiteral>();
-    const coreLibrary: google.maps.CoreLibrary | null = useMapsLibrary('core');
     const [shownRestaurants, setShownRestaurants] = useState<Restaurant[]>(restaurants);
+    const coreLibrary: google.maps.CoreLibrary | null = useMapsLibrary('core');
 
     useEffect(() => {
         const updatedListOfRestaurants = restaurants.filter(restaurant => {
