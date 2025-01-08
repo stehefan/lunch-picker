@@ -9,6 +9,7 @@ import { MarkerTag } from "../MarkerTag/MarkerTag";
 import { RestaurantList } from '../RestaurantList/RestaurantList';
 import { TagList } from '../TagList/TagList';
 import './LunchMap.css';
+import { AddRestaurantDialog } from '../AddRestaurantDialog/AddRestaurantDialog';
 
 export interface LunchMapProps {
     centerCoordinates: Location;
@@ -23,6 +24,8 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
     const [bounds, setBounds] = useState<google.maps.LatLngBoundsLiteral>();
     const [restaurantInfos, setRestaurantInfos] = useState<Restaurant[]>([]);
     const [shownRestaurants, setShownRestaurants] = useState<Restaurant[]>([]);
+    const [showAddDialog, setShowAddDialog] = useState(false);
+    const [selectedRestaurant, setSelectedRestaurant] = useState<google.maps.places.Place | undefined>(undefined);
     const coreLibrary: google.maps.CoreLibrary | null = useMapsLibrary('core');
     const placesLibrary: google.maps.PlacesLibrary | null = useMapsLibrary('places');
 
@@ -55,7 +58,7 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
 
     useEffect(() => {
         const updatedListOfRestaurants = restaurantInfos.filter(restaurant => {
-            const hasSelectedTags = selectedTags.some(tag => restaurant.tags.includes(tag));
+            const hasSelectedTags = restaurant.tags.length === 0 || selectedTags.some(tag => restaurant.tags.includes(tag));
             const isInBounds = coreLibrary && new coreLibrary.LatLngBounds(bounds).contains(restaurant.location);
             return hasSelectedTags && isInBounds;
         });
@@ -70,13 +73,40 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
         setSelectedTags(updatedSelectedTags);
     };
 
+    const addRestaurant = (restaurant: google.maps.places.Place) => {
+        const newRestaurantInfo: Restaurant = {
+            name: restaurant.displayName!,
+            tags: [],
+            placeId: restaurant.id,
+            location: restaurant.location!.toJSON(),
+            place: restaurant,
+        };
+        setRestaurantInfos([...restaurantInfos, newRestaurantInfo]);
+        setSelectedRestaurant(undefined);
+    };
+
+    const showRestaurant = (restaurant: google.maps.places.Place | undefined) => {
+        setSelectedRestaurant(restaurant);
+    };
+
     return (
         <SplitLayout rowReverse rowLayoutMinWidth={700}>
             <div className="control-slot" slot="fixed">
-                <span className='title'>What kind of food do you want?</span>
-                <TagList tags={uniqueTags} selectedTags={selectedTags} handleTagChange={handleTagChange} />
-                <span className='title'>Restaurants</span>
-                <RestaurantList restaurants={shownRestaurants} />
+                {showAddDialog && <AddRestaurantDialog hide={() => setShowAddDialog(false)} addRestaurant={addRestaurant} showRestaurant={showRestaurant} />}
+                {!showAddDialog && (
+                    <>
+                        <span className='title'>What kind of food do you want?</span>
+                        <TagList tags={uniqueTags} selectedTags={selectedTags} handleTagChange={handleTagChange} />
+                        <span className='title'>Restaurants</span>
+                        <RestaurantList restaurants={shownRestaurants} />
+                        <button onClick={() => setShowAddDialog(true)}>Add restaurant</button>
+                    </>
+                )}
+            </div>
+            <div slot="overlay">
+                <div className='overlay-content'>
+                    <span className='overlay-title'>{shownRestaurants.length} {shownRestaurants.length === 1 ? 'restaurant' : 'restaurants'} found</span>
+                </div>
             </div>
             <div className="map-slot" slot="main">
                 <Map
@@ -96,6 +126,11 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
                     <AdvancedMarker position={centerCoordinates} title='Work Location'>
                         <img src={logo} alt='Lunch Picker' />
                     </AdvancedMarker>
+                    {selectedRestaurant && (
+                        <AdvancedMarker position={selectedRestaurant.location!.toJSON()} title={selectedRestaurant.displayName!} >
+
+                        </AdvancedMarker>
+                    )}
                     {shownRestaurants.map((restaurant, index) => (
                         <AdvancedMarker key={`marker-${index}`} position={restaurant.location} title={restaurant.name} >
                             <MarkerTag title={restaurant.name} tags={uniqueTags.filter(tag => restaurant.tags.includes(tag))} />
