@@ -1,7 +1,7 @@
 import './TagList.css';
 
 export type TagListProps = {
-    tags: Record<string, string>;
+    tags: string[];
     selectedTags: string[];
     handleTagChange: (tag: string) => void;
 }
@@ -9,16 +9,10 @@ export type TagListProps = {
 export function TagList({ tags, selectedTags, handleTagChange }: TagListProps) {
     return (
         <div className='tag-container'>
-            {Object.entries(tags).map(([tag, color], index) => {
+            {tags.map((tag, index) => {
                 const isSelected = selectedTags.includes(tag);
                 return (
-                    <label
-                        key={`tag-${index}`}
-                        className='tag'
-                        style={{
-                            backgroundColor: color
-                        }}
-                    >
+                    <label key={`tag-${index}`} className='tag'>
                         {tag}
                         <input
                             disabled={selectedTags.length === 1 && isSelected}
