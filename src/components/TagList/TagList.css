@@ -33,3 +33,10 @@
     left: 0;
     z-index: -1;
 }
+
+.taglist-info {
+    margin-top: .5rem;
+    font-size: 0.8rem;
+    color: #63666a;
+    text-align: center;
+}
