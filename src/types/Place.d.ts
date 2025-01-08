@@ -4,6 +4,7 @@ export type Restaurant = {
     placeId: string;
     address: Address;
     location: Location;
+    place?: google.maps.places.Place;
 };
 
 export type Location = {

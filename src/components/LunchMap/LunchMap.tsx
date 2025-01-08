@@ -21,17 +21,46 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
     const uniqueTags = [...new Set(restaurants.flatMap(restaurant => restaurant.tags))];
     const [selectedTags, setSelectedTags] = useState<string[]>(uniqueTags);
     const [bounds, setBounds] = useState<google.maps.LatLngBoundsLiteral>();
-    const [shownRestaurants, setShownRestaurants] = useState<Restaurant[]>(restaurants);
+    const [restaurantInfos, setRestaurantInfos] = useState<Restaurant[]>([]);
+    const [shownRestaurants, setShownRestaurants] = useState<Restaurant[]>([]);
     const coreLibrary: google.maps.CoreLibrary | null = useMapsLibrary('core');
+    const placesLibrary: google.maps.PlacesLibrary | null = useMapsLibrary('places');
 
     useEffect(() => {
-        const updatedListOfRestaurants = restaurants.filter(restaurant => {
+        if (restaurants.length == 0 || !placesLibrary) {
+            return;
+        }
+        const placeRequestPromises: Promise<Restaurant>[] = restaurants.map(async restaurant => {
+            return new google.maps.places.Place({
+                id: restaurant.placeId,
+                requestedLanguage: 'en',
+            }).fetchFields({
+                fields: ['rating', 'priceLevel', 'photos', 'regularOpeningHours']
+            }).then(details => {
+                return {
+                    ...restaurant,
+                    place: details.place
+                };
+            }).catch(error => {
+                console.error(error);
+                return restaurant;
+            });
+        });
+        Promise
+            .all(placeRequestPromises)
+            .then(details => {
+                setRestaurantInfos(details);
+            });
+    }, [restaurants, placesLibrary]);
+
+    useEffect(() => {
+        const updatedListOfRestaurants = restaurantInfos.filter(restaurant => {
             const hasSelectedTags = selectedTags.some(tag => restaurant.tags.includes(tag));
             const isInBounds = coreLibrary && new coreLibrary.LatLngBounds(bounds).contains(restaurant.location);
             return hasSelectedTags && isInBounds;
         });
         setShownRestaurants(updatedListOfRestaurants);
-    }, [bounds, selectedTags, restaurants, coreLibrary]);
+    }, [bounds, selectedTags, restaurantInfos, coreLibrary]);
 
     const handleTagChange = (tag: string) => {
         const updatedSelectedTags = selectedTags.includes(tag)
