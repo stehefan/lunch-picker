@@ -11,6 +11,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+
+  --gmpx-color-surface: rgb(68, 68, 68);
+  --gmpx-color-on-surface: #ffffff;
+  --gmpx-color-on-surface-variant: #ffffff;
 }
 
 a {

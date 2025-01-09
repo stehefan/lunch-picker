@@ -38,7 +38,7 @@ export const AddRestaurantDialog = ({ hide, addRestaurant, showRestaurant }: Add
                 }}
             />
             <PlaceOverview
-                size="large"
+                size="medium"
                 place={restaurant}
                 googleLogoAlreadyDisplayed>
                 <div slot="action">
