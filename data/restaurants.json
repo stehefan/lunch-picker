@@ -10,7 +10,8 @@
         "location": {
             "lat": 53.5594586,
             "lng": 9.9731183
-        }
+        },
+        "openingHours": []
     },
     {
         "name": "Marend Tiroler Küche",
@@ -24,6 +25,7 @@
         "location": {
             "lat": 53.5575083,
             "lng": 9.9693306
-        }
+        },
+        "openingHours": []
     }
 ]
