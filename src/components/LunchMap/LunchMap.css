@@ -10,11 +10,30 @@
     margin: 1rem;
 }
 
-.title {
-    display: block;
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 1rem 0;
+.filter-section {
+    margin-bottom: 1rem;
+}
+
+.filter-section:last-of-type {
+    margin-bottom: 0;
+}
+
+.restaurant-list-wrapper {
+    margin-top: 1rem;
+    border-top: 1px dashed white;
+    padding-top: .5rem;
+}
+
+.control-slot-section {
+    margin: 1rem 0 .5rem 0;
+}
+
+.control-slot-section:first-of-type {
+    margin-top: 0;
+}
+
+.control-slot-section:last-of-type {
+    margin-bottom: 0;
 }
 
 .map {

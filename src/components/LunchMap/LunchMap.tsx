@@ -12,6 +12,7 @@ import './LunchMap.css';
 import { AddRestaurantDialog } from '../AddRestaurantDialog/AddRestaurantDialog';
 import { createRestaurantFromGooglePlace, fetchRestaurantDetails, isRestaurantShown } from '../../utils/restaurant';
 import { toggleTag } from '../../utils/tags';
+import { FilterSection } from '../FilterSection/FilterSection';
 
 export interface LunchMapProps {
     centerCoordinates: Location;
@@ -67,10 +68,14 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
                 {showAddDialog && <AddRestaurantDialog hide={() => setShowAddDialog(false)} addRestaurant={addRestaurant} showRestaurant={showRestaurant} />}
                 {!showAddDialog && (
                     <>
-                        <span className='title'>What kind of food do you want?</span>
-                        <TagList tags={uniqueTags} selectedTags={selectedTags} handleTagChange={handleTagChange} />
-                        <span className='title'>Restaurants</span>
-                        <RestaurantList restaurants={shownRestaurants} />
+                        <div className='filters'>
+                            <FilterSection title='What kind of food do you want?' className='filter-section'>
+                                <TagList tags={uniqueTags} selectedTags={selectedTags} handleTagChange={handleTagChange} />
+                            </FilterSection>
+                        </div>
+                        <div className='restaurant-list-wrapper'>
+                            <RestaurantList restaurants={shownRestaurants} />
+                        </div>
                         <button onClick={() => setShowAddDialog(true)}>Add restaurant</button>
                     </>
                 )}
