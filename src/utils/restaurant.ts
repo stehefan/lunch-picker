@@ -1,9 +1,10 @@
 import { Restaurant } from "../types/Place";
 
-export const isRestaurantShown = (restaurant: Restaurant, coreLibrary: google.maps.CoreLibrary | null, bounds: google.maps.LatLngBoundsLiteral | undefined, selectedTags: string[]) => {
+export const isRestaurantShown = (restaurant: Restaurant, coreLibrary: google.maps.CoreLibrary | null, bounds: google.maps.LatLngBoundsLiteral | undefined, selectedTags: string[], selectedPrice: google.maps.places.PriceLevel | undefined) => {
     const hasSelectedTags = restaurant.tags.length === 0 || selectedTags.some(tag => restaurant.tags.includes(tag));
     const isInBounds = coreLibrary && bounds && new coreLibrary.LatLngBounds(bounds).contains(restaurant.location);
-    return hasSelectedTags && isInBounds;
+    const isInPriceRange = selectedPrice ? restaurant.priceLevel === selectedPrice : true;
+    return hasSelectedTags && isInBounds && isInPriceRange;
 }
 
 export function createRestaurantFromGooglePlace(googlePlace: google.maps.places.Place): Restaurant {

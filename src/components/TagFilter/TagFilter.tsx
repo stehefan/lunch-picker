@@ -1,12 +1,12 @@
-import './TagList.css';
+import './TagFilter.css';
 
-export type TagListProps = {
+export type TagFilterProps = {
     tags: string[];
     selectedTags: string[];
     handleTagChange: (tag: string) => void;
 }
 
-export function TagList({ tags, selectedTags, handleTagChange }: TagListProps) {
+export function TagFilter({ tags, selectedTags, handleTagChange }: TagFilterProps) {
     return (
         <>
             <div className='tag-container'>

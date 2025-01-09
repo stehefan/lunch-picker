@@ -1,3 +1,4 @@
+import './LunchMap.css';
 import {
     SplitLayout
 } from '@googlemaps/extended-component-library/react';
@@ -7,12 +8,12 @@ import { ZoomSettings } from '../../types/App';
 import { Location, Restaurant } from '../../types/Place';
 import { MarkerTag } from "../MarkerTag/MarkerTag";
 import { RestaurantList } from '../RestaurantList/RestaurantList';
-import { TagList } from '../TagList/TagList';
-import './LunchMap.css';
+import { TagFilter } from '../TagFilter/TagFilter';
 import { AddRestaurantDialog } from '../AddRestaurantDialog/AddRestaurantDialog';
 import { createRestaurantFromGooglePlace, fetchRestaurantDetails, isRestaurantShown } from '../../utils/restaurant';
 import { toggleTag } from '../../utils/tags';
 import { FilterSection } from '../FilterSection/FilterSection';
+import { PriceFilter } from '../PriceFilter/PriceFilter';
 
 export interface LunchMapProps {
     centerCoordinates: Location;
@@ -24,6 +25,7 @@ export interface LunchMapProps {
 export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }: LunchMapProps) {
     const uniqueTags = [...new Set(restaurants.flatMap(restaurant => restaurant.tags))];
     const [selectedTags, setSelectedTags] = useState<string[]>(uniqueTags);
+    const [selectedPrice, setSelectedPrice] = useState<google.maps.places.PriceLevel | undefined>(undefined);
     const [bounds, setBounds] = useState<google.maps.LatLngBoundsLiteral>();
     const [restaurantInfos, setRestaurantInfos] = useState<Restaurant[]>([]);
     const [shownRestaurants, setShownRestaurants] = useState<Restaurant[]>([]);
@@ -46,11 +48,15 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
     }, [restaurants, placesLibrary]);
 
     useEffect(() => {
-        setShownRestaurants(restaurantInfos.filter(restaurant => isRestaurantShown(restaurant, coreLibrary, bounds, selectedTags)));
-    }, [bounds, selectedTags, restaurantInfos, coreLibrary]);
+        setShownRestaurants(restaurantInfos.filter(restaurant => isRestaurantShown(restaurant, coreLibrary, bounds, selectedTags, selectedPrice)));
+    }, [bounds, selectedTags, selectedPrice, restaurantInfos, coreLibrary]);
 
     const handleTagChange = (tag: string) => {
         setSelectedTags(toggleTag(selectedTags, tag));
+    };
+
+    const handlePriceChange = (price: google.maps.places.PriceLevel | undefined) => {
+        setSelectedPrice(price);
     };
 
     const addRestaurant = (googlePlace: google.maps.places.Place) => {
@@ -70,7 +76,10 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
                     <>
                         <div className='filters'>
                             <FilterSection title='What kind of food do you want?' className='filter-section'>
-                                <TagList tags={uniqueTags} selectedTags={selectedTags} handleTagChange={handleTagChange} />
+                                <TagFilter tags={uniqueTags} selectedTags={selectedTags} handleTagChange={handleTagChange} />
+                            </FilterSection>
+                            <FilterSection title='How much do you want to spend?' className='filter-section'>
+                                <PriceFilter selectedPrice={selectedPrice} handlePriceChange={handlePriceChange} />
                             </FilterSection>
                         </div>
                         <div className='restaurant-list-wrapper'>
