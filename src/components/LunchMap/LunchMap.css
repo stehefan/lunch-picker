@@ -41,3 +41,27 @@
     height: 100%;
     width: 100%;
 }
+
+.map-control-add {
+    background-color: rgb(68, 68, 68);
+    color: rgb(179, 179, 179);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+    border: none;
+    user-select: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.map-control-icon {
+    width: 30px;
+    height: 30px;
+    transition: rotate .2s ease-in-out;
+}
+
+.map-control-icon-active {
+    rotate: 45deg;
+}

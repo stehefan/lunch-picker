@@ -5,16 +5,15 @@
 }
 
 .add-restaurant-content {
-    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .add-restaurant-footer {
     flex: 1;
     display: flex;
     justify-content: center;
-    width: 100%;
-}
-
-.add-restraunt-footer button {
     width: 100%;
 }

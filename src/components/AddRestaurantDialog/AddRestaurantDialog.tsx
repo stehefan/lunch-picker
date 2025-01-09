@@ -21,45 +21,40 @@ export const AddRestaurantDialog = ({ hide, addRestaurant, showRestaurant }: Add
     }, [restaurant, showRestaurant]);
 
     return (
-        <>
-            <div className="add-restraunt-content">
-                <PlacePicker
-                    ref={placePickerRef}
-                    className="CollegePicker"
-                    forMap="gmap"
-                    country={['de']}
-                    type="restaurant"
-                    placeholder="Enter a restaurant"
-                    onPlaceChange={() => {
-                        if (placePickerRef.current?.value) {
-                            setRestaurant(placePickerRef.current?.value);
-                        } else {
-                            setRestaurant(undefined);
-                        }
-                    }}
-                />
-                <PlaceOverview
-                    size="large"
-                    place={restaurant}
-                    googleLogoAlreadyDisplayed>
-                    <div slot="action">
-                        <IconButton
-                            slot="action"
-                            variant="filled"
-                            onClick={() => {
-                                if (restaurant) {
-                                    addRestaurant(restaurant);
-                                    hide();
-                                }
-                            }}>
-                            Add to restaurant list
-                        </IconButton>
-                    </div>
-                </PlaceOverview>
-            </div>
-            <div className="add-restraunt-footer">
-                <button onClick={hide}>Cancel</button>
-            </div>
-        </>
+        <div className="add-restaurant-content">
+            <PlacePicker
+                ref={placePickerRef}
+                className="CollegePicker"
+                forMap="gmap"
+                country={['de']}
+                type="restaurant"
+                placeholder="Enter a restaurant"
+                onPlaceChange={() => {
+                    if (placePickerRef.current?.value) {
+                        setRestaurant(placePickerRef.current?.value);
+                    } else {
+                        setRestaurant(undefined);
+                    }
+                }}
+            />
+            <PlaceOverview
+                size="large"
+                place={restaurant}
+                googleLogoAlreadyDisplayed>
+                <div slot="action">
+                    <IconButton
+                        slot="action"
+                        variant="filled"
+                        onClick={() => {
+                            if (restaurant) {
+                                addRestaurant(restaurant);
+                                hide();
+                            }
+                        }}>
+                        Add to restaurant list
+                    </IconButton>
+                </div>
+            </PlaceOverview>
+        </div>
     );
 };

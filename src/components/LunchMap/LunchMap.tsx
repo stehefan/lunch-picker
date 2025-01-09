@@ -2,7 +2,7 @@ import './LunchMap.css';
 import {
     SplitLayout
 } from '@googlemaps/extended-component-library/react';
-import { AdvancedMarker, ColorScheme, Map, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { AdvancedMarker, ColorScheme, ControlPosition, Map, MapControl, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { ZoomSettings } from '../../types/App';
 import { Location, Restaurant } from '../../types/Place';
@@ -14,6 +14,8 @@ import { createRestaurantFromGooglePlace, fetchRestaurantDetails, isRestaurantSh
 import { toggleTag } from '../../utils/tags';
 import { FilterSection } from '../FilterSection/FilterSection';
 import { PriceFilter } from '../PriceFilter/PriceFilter';
+import { PlusCircleIcon } from '@heroicons/react/20/solid';
+import { XCircleIcon } from '@heroicons/react/20/solid';
 
 export interface LunchMapProps {
     centerCoordinates: Location;
@@ -85,7 +87,6 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
                         <div className='restaurant-list-wrapper'>
                             <RestaurantList restaurants={shownRestaurants} />
                         </div>
-                        <button onClick={() => setShowAddDialog(true)}>Add restaurant</button>
                     </>
                 )}
             </div>
@@ -109,13 +110,16 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
                     mapId={import.meta.env.VITE_GOOGLE_MAPS_MAP_ID}
                     onBoundsChanged={(event) => setBounds(event.detail.bounds)}
                     onTilesLoaded={(event) => setBounds(event.map.getBounds()?.toJSON())}>
+                    <MapControl position={ControlPosition.TOP_RIGHT}>
+                        <button className='map-control-add' onClick={() => setShowAddDialog(!showAddDialog)} title={showAddDialog ? 'Close' : 'Add Restaurant to List'}>
+                            <PlusCircleIcon className={`map-control-icon ${showAddDialog ? 'map-control-icon-active' : ''}`} />
+                        </button>
+                    </MapControl>
                     <AdvancedMarker position={centerCoordinates} title='Work Location'>
                         <img src={logo} alt='Lunch Picker' />
                     </AdvancedMarker>
                     {selectedRestaurant && (
-                        <AdvancedMarker position={selectedRestaurant.location!.toJSON()} title={selectedRestaurant.displayName!} >
-
-                        </AdvancedMarker>
+                        <AdvancedMarker position={selectedRestaurant.location!.toJSON()} title={selectedRestaurant.displayName!} />
                     )}
                     {shownRestaurants.map((restaurant, index) => (
                         <AdvancedMarker key={`marker-${index}`} position={restaurant.location} title={restaurant.name} >
