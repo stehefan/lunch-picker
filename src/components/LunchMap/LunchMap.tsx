@@ -15,7 +15,6 @@ import { toggleTag } from '../../utils/tags';
 import { FilterSection } from '../FilterSection/FilterSection';
 import { PriceFilter } from '../PriceFilter/PriceFilter';
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
-import { XCircleIcon } from '@heroicons/react/20/solid';
 
 export interface LunchMapProps {
     centerCoordinates: Location;
