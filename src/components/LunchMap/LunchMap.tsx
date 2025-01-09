@@ -97,7 +97,6 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
             <div className="map-slot" slot="main">
                 <Map
                     className='map'
-                    colorScheme={ColorScheme.DARK}
                     disableDefaultUI
                     zoomControl
                     fullscreenControl={false}
