@@ -10,6 +10,8 @@ import { RestaurantList } from '../RestaurantList/RestaurantList';
 import { TagList } from '../TagList/TagList';
 import './LunchMap.css';
 import { AddRestaurantDialog } from '../AddRestaurantDialog/AddRestaurantDialog';
+import { createRestaurantFromGooglePlace, fetchRestaurantDetails, isRestaurantShown } from '../../utils/restaurant';
+import { toggleTag } from '../../utils/tags';
 
 export interface LunchMapProps {
     centerCoordinates: Location;
@@ -34,24 +36,7 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
         if (restaurants.length == 0 || !placesLibrary) {
             return;
         }
-        const placeRequestPromises: Promise<Restaurant>[] = restaurants.map(async restaurant => {
-            return new google.maps.places.Place({
-                id: restaurant.placeId,
-                requestedLanguage: 'en',
-            }).fetchFields({
-                fields: ['rating', 'priceLevel', 'photos', 'regularOpeningHours']
-            }).then(details => {
-                return {
-                    ...restaurant,
-                    openingHours: details.place.regularOpeningHours?.periods || [],
-                    priceLevel: details.place.priceLevel || undefined,
-                    rating: details.place.rating || undefined,
-                };
-            }).catch(error => {
-                console.error(error);
-                return restaurant;
-            });
-        });
+        const placeRequestPromises: Promise<Restaurant>[] = restaurants.map(fetchRestaurantDetails);
         Promise
             .all(placeRequestPromises)
             .then(details => {
@@ -60,33 +45,15 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
     }, [restaurants, placesLibrary]);
 
     useEffect(() => {
-        const updatedListOfRestaurants = restaurantInfos.filter(restaurant => {
-            const hasSelectedTags = restaurant.tags.length === 0 || selectedTags.some(tag => restaurant.tags.includes(tag));
-            const isInBounds = coreLibrary && new coreLibrary.LatLngBounds(bounds).contains(restaurant.location);
-            return hasSelectedTags && isInBounds;
-        });
-        setShownRestaurants(updatedListOfRestaurants);
+        setShownRestaurants(restaurantInfos.filter(restaurant => isRestaurantShown(restaurant, coreLibrary, bounds, selectedTags)));
     }, [bounds, selectedTags, restaurantInfos, coreLibrary]);
 
     const handleTagChange = (tag: string) => {
-        const updatedSelectedTags = selectedTags.includes(tag)
-            ? selectedTags.filter((t: string) => t !== tag)
-            : [...selectedTags, tag];
-
-        setSelectedTags(updatedSelectedTags);
+        setSelectedTags(toggleTag(selectedTags, tag));
     };
 
     const addRestaurant = (googlePlace: google.maps.places.Place) => {
-        const newRestaurantInfo: Restaurant = {
-            name: googlePlace.displayName!,
-            tags: [],
-            placeId: googlePlace.id,
-            location: googlePlace.location!.toJSON(),
-            openingHours: googlePlace.regularOpeningHours?.periods || [],
-            priceLevel: googlePlace.priceLevel || undefined,
-            rating: googlePlace.rating || undefined,
-        };
-        setRestaurantInfos([...restaurantInfos, newRestaurantInfo]);
+        setRestaurantInfos([...restaurantInfos, createRestaurantFromGooglePlace(googlePlace)]);
         setSelectedRestaurant(undefined);
     };
 
