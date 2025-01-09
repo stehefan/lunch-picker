@@ -11,24 +11,32 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
     const [opensAt, setOpensAt] = useState<Date | null>(null);
     const [priceIndicator, setPriceIndicator] = useState<string | null>(null);
 
-    const googleMapsUrl = restaurant.place?.googleMapsURI || `https://www.google.com/maps/search/?api=1&query=${restaurant.location.lat},${restaurant.location.lng}&query_place_id=${restaurant.placeId}`;
+    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${restaurant.location.lat},${restaurant.location.lng}&query_place_id=${restaurant.placeId}`;
 
     useEffect(() => {
         const now: Date = new Date()
-        restaurant.place?.isOpen(now).then(isOpen => {
-            setIsOpen(isOpen ?? false);
+        const isOpen = restaurant.openingHours?.some(
+            period => {
+                const isSameDay = period.open.day === now.getDay();
+                if (!isSameDay) return false;
 
-            if (!isOpen) {
-                const openeningHoursForToday: google.maps.places.OpeningHoursPeriod | undefined = restaurant.place?.regularOpeningHours?.periods.find(period => period.open.day === now.getDay());
+                const currentHour = now.getHours();
+                // if there is no close time, the restaurant is open
+                return currentHour >= period.open.hour && period.close ? currentHour < period.close.hour : true;
+            }) || false;
 
-                if (openeningHoursForToday) {
-                    const { hour, minute } = openeningHoursForToday.open;
-                    setOpensAt(new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute));
-                }
+        setIsOpen(isOpen);
+
+        if (!isOpen) {
+            const openeningHoursForToday: google.maps.places.OpeningHoursPeriod | undefined = restaurant.openingHours?.find(period => period.open.day === now.getDay());
+
+            if (openeningHoursForToday) {
+                const { hour, minute } = openeningHoursForToday.open;
+                setOpensAt(new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute));
             }
-        });
+        }
 
-        switch (restaurant.place?.priceLevel) {
+        switch (restaurant.priceLevel) {
             case google.maps.places.PriceLevel.FREE:
                 setPriceIndicator('🆓');
                 break;
@@ -56,7 +64,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
                 <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">{restaurant.name}</a> <small>🔗</small>
             </span>
             <div className='card-details'>
-                <span>∅ {restaurant.place?.rating}</span>
+                <span>∅ {restaurant.rating}</span>
                 {priceIndicator && <span>{priceIndicator}</span>}
                 {isOpen && <span>{isOpen ? 'Open' : 'Closed'}</span>}
                 {opensAt && <time dateTime={opensAt.toISOString()}>{opensAt.toLocaleDateString()}</time>}

@@ -26,6 +26,7 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
     const [shownRestaurants, setShownRestaurants] = useState<Restaurant[]>([]);
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [selectedRestaurant, setSelectedRestaurant] = useState<google.maps.places.Place | undefined>(undefined);
+
     const coreLibrary: google.maps.CoreLibrary | null = useMapsLibrary('core');
     const placesLibrary: google.maps.PlacesLibrary | null = useMapsLibrary('places');
 
@@ -42,7 +43,9 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
             }).then(details => {
                 return {
                     ...restaurant,
-                    place: details.place
+                    openingHours: details.place.regularOpeningHours?.periods || [],
+                    priceLevel: details.place.priceLevel || undefined,
+                    rating: details.place.rating || undefined,
                 };
             }).catch(error => {
                 console.error(error);
@@ -73,13 +76,15 @@ export function LunchMap({ centerCoordinates, zoomSettings, restaurants, logo }:
         setSelectedTags(updatedSelectedTags);
     };
 
-    const addRestaurant = (restaurant: google.maps.places.Place) => {
+    const addRestaurant = (googlePlace: google.maps.places.Place) => {
         const newRestaurantInfo: Restaurant = {
-            name: restaurant.displayName!,
+            name: googlePlace.displayName!,
             tags: [],
-            placeId: restaurant.id,
-            location: restaurant.location!.toJSON(),
-            place: restaurant,
+            placeId: googlePlace.id,
+            location: googlePlace.location!.toJSON(),
+            openingHours: googlePlace.regularOpeningHours?.periods || [],
+            priceLevel: googlePlace.priceLevel || undefined,
+            rating: googlePlace.rating || undefined,
         };
         setRestaurantInfos([...restaurantInfos, newRestaurantInfo]);
         setSelectedRestaurant(undefined);
