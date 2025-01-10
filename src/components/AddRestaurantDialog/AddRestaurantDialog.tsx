@@ -56,12 +56,12 @@ export const AddRestaurantDialog = ({ hide }: AddRestaurantDialogProps) => {
                     </IconButton>
                 </div>
             </PlaceOverview>
-            <div className="place-tags">
+            {selectedRestaurant && <div className="place-tags">
                 <div className="place-tags-title">Tags for this restaurant</div>
                 <div className="place-tags-list">
                     <TagFilter allowAdd={true} showHint={false} />
                 </div>
-            </div>
+            </div>}
         </div>
     );
 };
