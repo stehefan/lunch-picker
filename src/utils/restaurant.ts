@@ -1,39 +1,36 @@
-import { Restaurant } from "../types/Place";
+import { OpeningHoursPeriod, Restaurant } from "../types/Place";
+import { Tag } from "../types/Filter";
+import { PriceLevel } from "../types/Enum";
 
-export const isRestaurantShown = (restaurant: Restaurant, coreLibrary: google.maps.CoreLibrary | null, bounds: google.maps.LatLngBoundsLiteral | undefined, selectedTags: string[], selectedPrice: google.maps.places.PriceLevel | undefined) => {
-    const hasSelectedTags = restaurant.tags.length === 0 || selectedTags.some(tag => restaurant.tags.includes(tag));
-    const isInBounds = coreLibrary && bounds && new coreLibrary.LatLngBounds(bounds).contains(restaurant.location);
-    const isInPriceRange = selectedPrice ? restaurant.priceLevel === selectedPrice : true;
-    return hasSelectedTags && isInBounds && isInPriceRange;
+const isInBounds = (restaurant: Restaurant, bounds: google.maps.LatLngBoundsLiteral) => {
+    const { lat, lng } = restaurant.location;
+    const { north, south, east, west } = bounds;
+    return lat >= south && lat <= north && lng >= west && lng <= east;
 }
 
-export function createRestaurantFromGooglePlace(googlePlace: google.maps.places.Place): Restaurant {
+export const isRestaurantShown = (restaurant: Restaurant, bounds: google.maps.LatLngBoundsLiteral | undefined, selectedTags: Tag[], selectedPrice: PriceLevel | undefined) => {
+    const hasSelectedTags = restaurant.tags.length === 0 || selectedTags.some(tag => tag.selected && restaurant.tags.includes(tag.name));
+    const isVisibleOnMap = bounds && isInBounds(restaurant, bounds);
+    const isInPriceRange = selectedPrice ? restaurant.priceLevel === selectedPrice : true;
+
+    return hasSelectedTags && isVisibleOnMap && isInPriceRange;
+}
+
+export const createRestaurantFromGooglePlace = (googlePlace: google.maps.places.Place): Restaurant => {
     return {
         name: googlePlace.displayName!,
         tags: [],
         placeId: googlePlace.id,
         location: googlePlace.location!.toJSON(),
-        openingHours: googlePlace.regularOpeningHours?.periods || [],
+        openingHours: extractOpeningHours(googlePlace),
         priceLevel: googlePlace.priceLevel || undefined,
         rating: googlePlace.rating || undefined,
     };
 }
 
-export async function fetchRestaurantDetails(restaurant: Restaurant): Promise<Restaurant> {
-    return new google.maps.places.Place({
-        id: restaurant.placeId,
-        requestedLanguage: 'en',
-    }).fetchFields({
-        fields: ['rating', 'priceLevel', 'photos', 'regularOpeningHours']
-    }).then(details => {
-        return {
-            ...restaurant,
-            openingHours: details.place.regularOpeningHours?.periods || [],
-            priceLevel: details.place.priceLevel || undefined,
-            rating: details.place.rating || undefined,
-        };
-    }).catch(error => {
-        console.error(error);
-        return restaurant;
-    });
+const extractOpeningHours = (googlePlace: google.maps.places.Place): OpeningHoursPeriod[] => {
+    return googlePlace.regularOpeningHours?.periods.map(period => ({
+        open: period.open!,
+        close: period.close!
+    })) || [];
 }

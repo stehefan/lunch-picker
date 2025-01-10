@@ -1,20 +1,17 @@
-import { Suspense, useEffect } from 'react';
-import { useState } from 'react';
-import './PriceFilter.css';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
-
-interface PriceFilterProps {
-    handlePriceChange: (price: google.maps.places.PriceLevel | undefined) => void;
-    selectedPrice: google.maps.places.PriceLevel | undefined;
-}
+import { useAtom } from 'jotai';
+import { Suspense, useEffect } from 'react';
+import { selectedPriceAtom, priceLevelsAtom } from '../../atoms/restaurantAtoms';
+import './PriceFilter.css';
 
 function mapPriceLevelToLabel(priceLevel: string): string {
     return priceLevel.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
 }
 
-export function PriceFilter({ handlePriceChange, selectedPrice }: PriceFilterProps) {
+export function PriceFilter() {
     const placesLibrary = useMapsLibrary('places');
-    const [priceLevels, setPriceLevels] = useState<google.maps.places.PriceLevel[]>([]);
+    const [selectedPrice, setSelectedPrice] = useAtom(selectedPriceAtom);
+    const [priceLevels, setPriceLevels] = useAtom(priceLevelsAtom);
 
     useEffect(() => {
         if (!placesLibrary) {
@@ -22,7 +19,7 @@ export function PriceFilter({ handlePriceChange, selectedPrice }: PriceFilterPro
         }
         const priceLevels = Object.values(placesLibrary.PriceLevel).filter(priceLevel => priceLevel !== placesLibrary.PriceLevel.FREE);
         setPriceLevels(priceLevels);
-    }, [placesLibrary]);
+    }, [placesLibrary, setPriceLevels]);
 
     return (
         <Suspense fallback={<div>Loading...</div>}>
@@ -36,7 +33,7 @@ export function PriceFilter({ handlePriceChange, selectedPrice }: PriceFilterPro
                         name='selected-price'
                         value={undefined}
                         checked={selectedPrice === undefined}
-                        onChange={() => handlePriceChange(undefined)}
+                        onChange={() => setSelectedPrice(undefined)}
                     />
                 </label>
                 {priceLevels.map((priceLevel, index) => {
@@ -50,7 +47,7 @@ export function PriceFilter({ handlePriceChange, selectedPrice }: PriceFilterPro
                                 name='selected-price'
                                 value={priceLevel}
                                 checked={selectedPrice === priceLevel}
-                                onChange={() => handlePriceChange(priceLevel)}
+                                onChange={() => setSelectedPrice(priceLevel)}
                             />
                         </label>
                     )

@@ -1,0 +1,7 @@
+export enum PriceLevel {
+    EXPENSIVE = 'EXPENSIVE',
+    FREE = 'FREE',
+    INEXPENSIVE = 'INEXPENSIVE',
+    MODERATE = 'MODERATE',
+    VERY_EXPENSIVE = 'VERY_EXPENSIVE',
+}

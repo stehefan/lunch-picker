@@ -1,28 +1,30 @@
+import { useAtom } from 'jotai';
+import { tagsAtom } from '../../atoms/restaurantAtoms';
+import { Tag } from '../../types/Filter';
 import './TagFilter.css';
 
-export type TagFilterProps = {
-    tags: string[];
-    selectedTags: string[];
-    handleTagChange: (tag: string) => void;
-}
+export function TagFilter() {
+    const [tags, setTags] = useAtom(tagsAtom);
 
-export function TagFilter({ tags, selectedTags, handleTagChange }: TagFilterProps) {
+    const handleTagChange = (tagName: string) => {
+        setTags((prev: Tag[]) => prev.map(t => t.name === tagName ? { ...t, selected: !t.selected } : t));
+    };
+
     return (
         <>
             <div className='tag-container'>
                 {tags.map((tag, index) => {
-                    const isSelected = selectedTags.includes(tag);
                     return (
                         <label key={`tag-${index}`} className='tag'>
-                            {tag}
+                            {tag.name}
                             <input
-                                disabled={selectedTags.length === 1 && isSelected}
+                                disabled={tags.length === 1 && tag.selected}
                                 type='checkbox'
                                 id={`tag-${index}`}
                                 name='selected-tag'
-                                value={tag}
-                                checked={isSelected}
-                                onChange={() => handleTagChange(tag)}
+                                value={tag.name}
+                                checked={tag.selected}
+                                onChange={() => handleTagChange(tag.name)}
                             />
                         </label>
                     )

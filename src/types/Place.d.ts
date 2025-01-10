@@ -3,10 +3,21 @@ export type Restaurant = {
     tags: string[]
     placeId: string;
     location: Location;
-    openingHours: google.maps.places.OpeningHoursPeriod[];
-    priceLevel?: google.maps.places.PriceLevel;
+    openingHours: OpeningHoursPeriod[];
+    priceLevel?: PriceLevel;
     rating?: number;
 };
+
+export type OpeningHoursPeriod = {
+    open: OpeningHoursPoint;
+    close: OpeningHoursPoint;
+}
+
+export type OpeningHoursPoint = {
+    day: number;
+    hour: number;
+    minute: number;
+}
 
 export type Location = {
     lat: number;

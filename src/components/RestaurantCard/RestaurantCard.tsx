@@ -1,5 +1,5 @@
 import { PriceLevel } from "../../types/Enum";
-import { Restaurant } from "../../types/Place";
+import { OpeningHoursPeriod, Restaurant } from "../../types/Place";
 import './RestaurantCard.css';
 interface RestaurantCardProps {
     restaurant: Restaurant;
@@ -7,15 +7,15 @@ interface RestaurantCardProps {
 
 function getPriceIndicator(priceLevel: PriceLevel) {
     switch (priceLevel) {
-        case google.maps.places.PriceLevel.FREE:
+        case PriceLevel.FREE:
             return '🆓';
-        case google.maps.places.PriceLevel.INEXPENSIVE:
+        case PriceLevel.INEXPENSIVE:
             return '€';
-        case google.maps.places.PriceLevel.MODERATE:
+        case PriceLevel.MODERATE:
             return '€€';
-        case google.maps.places.PriceLevel.EXPENSIVE:
+        case PriceLevel.EXPENSIVE:
             return '€€€';
-        case google.maps.places.PriceLevel.VERY_EXPENSIVE:
+        case PriceLevel.VERY_EXPENSIVE:
             return '€€€€';
         default:
             return '💸';
@@ -37,7 +37,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         }) || false;
 
     if (!isOpen) {
-        const openeningHoursForToday: google.maps.places.OpeningHoursPeriod | undefined = restaurant.openingHours?.find(period => period.open.day === now.getDay());
+        const openeningHoursForToday: OpeningHoursPeriod | undefined = restaurant.openingHours?.find(period => period.open.day === now.getDay());
 
         if (openeningHoursForToday) {
             const { hour, minute } = openeningHoursForToday.open;

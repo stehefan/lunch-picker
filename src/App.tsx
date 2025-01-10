@@ -1,6 +1,8 @@
 import restaurants from '../data/restaurants.json';
 import './App.css';
 import logo from './assets/logo.svg';
+import { tagsAtom, restaurantAtom } from './atoms/restaurantAtoms';
+import { useSetAtom } from 'jotai';
 
 import { LunchMapWrapper } from './components/LunchMap/LunchMapWrapper';
 import { Location } from './types/Place';
@@ -17,11 +19,16 @@ function App() {
     lng: parseFloat(lng)
   };
 
+  const setRestaurantInfos = useSetAtom(restaurantAtom);
+  const setTags = useSetAtom(tagsAtom);
+
+  setRestaurantInfos(restaurants);
+  setTags([...new Set(restaurants.flatMap(detail => detail.tags))].map(tag => ({ name: tag, selected: true })));
+
   return (
     <LunchMapWrapper
       centerCoordinates={centerCoordinates}
       zoomSettings={zoomSettings}
-      restaurants={restaurants}
       logo={logo}
     />
   )

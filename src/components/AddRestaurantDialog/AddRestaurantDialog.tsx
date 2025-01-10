@@ -1,24 +1,27 @@
 import './AddRestaurantDialog.css';
 import { PlacePicker as TPlacePicker } from '@googlemaps/extended-component-library/place_picker.js';
-
 import { IconButton, PlaceOverview, PlacePicker } from "@googlemaps/extended-component-library/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
+import { useAtom, useSetAtom } from 'jotai';
+import { restaurantAtom, selectedRestaurantAtom } from '../../atoms/restaurantAtoms';
+import { createRestaurantFromGooglePlace } from '../../utils/restaurant';
 
 interface AddRestaurantDialogProps {
     hide: () => void;
-    addRestaurant: (restaurant: google.maps.places.Place) => void;
-    showRestaurant: (restaurant: google.maps.places.Place | undefined) => void;
 }
 
-export const AddRestaurantDialog = ({ hide, addRestaurant, showRestaurant }: AddRestaurantDialogProps) => {
-    const [restaurant, setRestaurant] = useState<google.maps.places.Place | undefined>(undefined);
+export const AddRestaurantDialog = ({ hide }: AddRestaurantDialogProps) => {
+    const [selectedRestaurant, setSelectedRestaurant] = useAtom(selectedRestaurantAtom);
+    const setRestaurantInfos = useSetAtom(restaurantAtom);
     const placePickerRef = useRef<TPlacePicker>(null);
 
-    useEffect(() => {
-        if (restaurant) {
-            showRestaurant(restaurant);
+    const addRestaurant = () => {
+        if (selectedRestaurant) {
+            setRestaurantInfos(prev => [...prev, (createRestaurantFromGooglePlace(selectedRestaurant))]);
+            setSelectedRestaurant(undefined);
+            hide();
         }
-    }, [restaurant, showRestaurant]);
+    };
 
     return (
         <div className="add-restaurant-content">
@@ -31,26 +34,21 @@ export const AddRestaurantDialog = ({ hide, addRestaurant, showRestaurant }: Add
                 placeholder="Enter a restaurant"
                 onPlaceChange={() => {
                     if (placePickerRef.current?.value) {
-                        setRestaurant(placePickerRef.current?.value);
+                        setSelectedRestaurant(placePickerRef.current?.value);
                     } else {
-                        setRestaurant(undefined);
+                        setSelectedRestaurant(undefined);
                     }
                 }}
             />
             <PlaceOverview
                 size="medium"
-                place={restaurant}
+                place={selectedRestaurant}
                 googleLogoAlreadyDisplayed>
                 <div slot="action">
                     <IconButton
                         slot="action"
                         variant="filled"
-                        onClick={() => {
-                            if (restaurant) {
-                                addRestaurant(restaurant);
-                                hide();
-                            }
-                        }}>
+                        onClick={addRestaurant}>
                         Add to restaurant list
                     </IconButton>
                 </div>
