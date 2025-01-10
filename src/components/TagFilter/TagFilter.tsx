@@ -1,13 +1,21 @@
 import { useAtom } from 'jotai';
 import { tagsAtom } from '../../atoms/restaurantAtoms';
 import { Tag } from '../../types/Filter';
+import { AddTagInput } from '../AddTagInput/AddTagInput';
 import './TagFilter.css';
 
-export function TagFilter() {
+interface TagFilterProps {
+    showHint?: boolean;
+    allowAdd?: boolean;
+}
+
+export function TagFilter({ showHint = true, allowAdd = false }: TagFilterProps) {
     const [tags, setTags] = useAtom(tagsAtom);
 
     const handleTagChange = (tagName: string) => {
-        setTags((prev: Tag[]) => prev.map(t => t.name === tagName ? { ...t, selected: !t.selected } : t));
+        setTags((prev: Tag[]) => prev.map(t =>
+            t.name === tagName ? { ...t, selected: !t.selected } : t
+        ));
     };
 
     return (
@@ -29,8 +37,9 @@ export function TagFilter() {
                         </label>
                     )
                 })}
+                {allowAdd && <AddTagInput />}
             </div>
-            <div className='taglist-info'>pick at least one tag to find restaurants</div>
+            {showHint && <div className='taglist-info'>pick at least one tag to find restaurants</div>}
         </>
     )
 }

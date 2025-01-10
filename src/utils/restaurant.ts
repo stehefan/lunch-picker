@@ -16,10 +16,10 @@ export const isRestaurantShown = (restaurant: Restaurant, bounds: google.maps.La
     return hasSelectedTags && isVisibleOnMap && isInPriceRange;
 }
 
-export const createRestaurantFromGooglePlace = (googlePlace: google.maps.places.Place): Restaurant => {
+export const createRestaurantFromGooglePlace = (googlePlace: google.maps.places.Place, tags: string[]): Restaurant => {
     return {
         name: googlePlace.displayName!,
-        tags: [],
+        tags: tags,
         placeId: googlePlace.id,
         location: googlePlace.location!.toJSON(),
         openingHours: extractOpeningHours(googlePlace),

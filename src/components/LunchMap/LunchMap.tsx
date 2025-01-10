@@ -6,9 +6,11 @@ import { AdvancedMarker, ControlPosition, Map, MapControl } from "@vis.gl/react-
 import { useAtom, useSetAtom } from 'jotai';
 import {
     boundsAtom,
+    selectedPriceAtom,
     selectedRestaurantAtom,
     showAddDialogAtom,
-    shownRestaurantsAtom
+    shownRestaurantsAtom,
+    tagsAtom
 } from '../../atoms/restaurantAtoms';
 import { ZoomSettings } from '../../types/App';
 import { Location } from '../../types/Place';
@@ -28,15 +30,25 @@ export interface LunchMapProps {
 
 export function LunchMap({ centerCoordinates, zoomSettings, logo }: LunchMapProps) {
     const setBounds = useSetAtom(boundsAtom);
+    const setSelectedTags = useSetAtom(tagsAtom);
+    const setSelectedPrice = useSetAtom(selectedPriceAtom);
 
     const [showAddDialog, setShowAddDialog] = useAtom(showAddDialogAtom);
     const [shownRestaurants] = useAtom(shownRestaurantsAtom);
     const [selectedRestaurant] = useAtom(selectedRestaurantAtom);
 
+    const resetFilters = () => {
+        setSelectedTags((prev) => prev.map(tag => ({ ...tag, selected: true })));
+        setSelectedPrice(undefined);
+    }
+
     return (
         <SplitLayout rowReverse rowLayoutMinWidth={700}>
             <div className="control-slot" slot="fixed">
-                {showAddDialog && <AddRestaurantDialog hide={() => setShowAddDialog(false)} />}
+                {showAddDialog && <AddRestaurantDialog hide={() => {
+                    setShowAddDialog(false);
+                    resetFilters();
+                }} />}
                 {!showAddDialog && (
                     <>
                         <div className='filters'>

@@ -3,8 +3,9 @@ import { PlacePicker as TPlacePicker } from '@googlemaps/extended-component-libr
 import { IconButton, PlaceOverview, PlacePicker } from "@googlemaps/extended-component-library/react";
 import { useRef } from "react";
 import { useAtom, useSetAtom } from 'jotai';
-import { restaurantAtom, selectedRestaurantAtom } from '../../atoms/restaurantAtoms';
+import { restaurantAtom, selectedRestaurantAtom, tagsAtom } from '../../atoms/restaurantAtoms';
 import { createRestaurantFromGooglePlace } from '../../utils/restaurant';
+import { TagFilter } from '../TagFilter/TagFilter';
 
 interface AddRestaurantDialogProps {
     hide: () => void;
@@ -12,12 +13,13 @@ interface AddRestaurantDialogProps {
 
 export const AddRestaurantDialog = ({ hide }: AddRestaurantDialogProps) => {
     const [selectedRestaurant, setSelectedRestaurant] = useAtom(selectedRestaurantAtom);
+    const [selectedTags] = useAtom(tagsAtom);
     const setRestaurantInfos = useSetAtom(restaurantAtom);
     const placePickerRef = useRef<TPlacePicker>(null);
 
     const addRestaurant = () => {
         if (selectedRestaurant) {
-            setRestaurantInfos(prev => [...prev, (createRestaurantFromGooglePlace(selectedRestaurant))]);
+            setRestaurantInfos(prev => [...prev, (createRestaurantFromGooglePlace(selectedRestaurant, [...selectedTags.filter(tag => tag.selected).map(tag => tag.name)]))]);
             setSelectedRestaurant(undefined);
             hide();
         }
@@ -27,7 +29,7 @@ export const AddRestaurantDialog = ({ hide }: AddRestaurantDialogProps) => {
         <div className="add-restaurant-content">
             <PlacePicker
                 ref={placePickerRef}
-                className="CollegePicker"
+                className="place-picker"
                 forMap="gmap"
                 country={['de']}
                 type="restaurant"
@@ -42,6 +44,7 @@ export const AddRestaurantDialog = ({ hide }: AddRestaurantDialogProps) => {
             />
             <PlaceOverview
                 size="medium"
+                className="place-overview"
                 place={selectedRestaurant}
                 googleLogoAlreadyDisplayed>
                 <div slot="action">
@@ -53,6 +56,12 @@ export const AddRestaurantDialog = ({ hide }: AddRestaurantDialogProps) => {
                     </IconButton>
                 </div>
             </PlaceOverview>
+            <div className="place-tags">
+                <div className="place-tags-title">Tags for this restaurant</div>
+                <div className="place-tags-list">
+                    <TagFilter allowAdd={true} showHint={false} />
+                </div>
+            </div>
         </div>
     );
 };
