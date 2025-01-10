@@ -11,7 +11,142 @@
             "lat": 53.5594586,
             "lng": 9.9731183
         },
-        "openingHours": []
+        "openingHours": [
+            {
+                "open": {
+                    "day": 1,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 1,
+                    "hour": 15,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 1,
+                    "hour": 17,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 1,
+                    "hour": 20,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 2,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 2,
+                    "hour": 15,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 2,
+                    "hour": 17,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 2,
+                    "hour": 20,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 3,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 3,
+                    "hour": 15,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 3,
+                    "hour": 17,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 3,
+                    "hour": 20,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 4,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 4,
+                    "hour": 15,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 4,
+                    "hour": 17,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 4,
+                    "hour": 20,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 5,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 5,
+                    "hour": 15,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 5,
+                    "hour": 17,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 5,
+                    "hour": 20,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 6,
+                    "hour": 18,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 6,
+                    "hour": 21,
+                    "minute": 0
+                }
+            }
+        ],
+        "priceLevel": "INEXPENSIVE",
+        "rating": 4.7
     },
     {
         "name": "Marend Tiroler Küche",
@@ -26,6 +161,81 @@
             "lat": 53.5575083,
             "lng": 9.9693306
         },
-        "openingHours": []
+        "openingHours": [
+            {
+                "open": {
+                    "day": 1,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 1,
+                    "hour": 23,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 2,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 2,
+                    "hour": 23,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 3,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 3,
+                    "hour": 23,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 4,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 4,
+                    "hour": 23,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 5,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 5,
+                    "hour": 23,
+                    "minute": 0
+                }
+            },
+            {
+                "open": {
+                    "day": 6,
+                    "hour": 12,
+                    "minute": 0
+                },
+                "close": {
+                    "day": 6,
+                    "hour": 23,
+                    "minute": 0
+                }
+            }
+        ],
+        "priceLevel": "MODERATE",
+        "rating": 4.6
     }
 ]
