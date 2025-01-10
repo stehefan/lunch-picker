@@ -48,7 +48,7 @@ export function LunchMap({ centerCoordinates, zoomSettings, logo }: LunchMapProp
                             </FilterSection>
                         </div>
                         <div className='restaurant-list-wrapper'>
-                            <RestaurantList restaurants={shownRestaurants} />
+                            <RestaurantList />
                         </div>
                     </>
                 )}

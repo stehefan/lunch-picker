@@ -11,6 +11,7 @@ export const restaurantAtom = atom<Restaurant[]>([]);
 export const showAddDialogAtom = atom<boolean>(false);
 export const selectedRestaurantAtom = atom<google.maps.places.Place | undefined>(undefined);
 export const priceLevelsAtom = atom<PriceLevel[]>([]);
+export const numberOfRestaurantsAtom = atom<number>((get) => get(restaurantAtom).length);
 
 export const shownRestaurantsAtom = atom<Restaurant[]>((get) => {
     const restaurants = get(restaurantAtom);

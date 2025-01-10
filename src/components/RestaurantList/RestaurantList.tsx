@@ -1,12 +1,12 @@
+import { useAtom } from "jotai";
+import { shownRestaurantsAtom, numberOfRestaurantsAtom } from "../../atoms/restaurantAtoms";
 import { RestaurantCard } from "../RestaurantCard/RestaurantCard";
 import './RestaurantList.css';
-import { Restaurant } from "../../types/Place";
 
-interface RestaurantListProps {
-    restaurants: Restaurant[];
-}
 
-export function RestaurantList({ restaurants }: RestaurantListProps) {
+export function RestaurantList() {
+    const [restaurants] = useAtom(shownRestaurantsAtom);
+    const [numberOfRestaurants] = useAtom(numberOfRestaurantsAtom);
     return (
         <>
             <div className='restaurant-list'>
@@ -14,7 +14,7 @@ export function RestaurantList({ restaurants }: RestaurantListProps) {
                     <RestaurantCard key={`restaurant-${index}`} restaurant={restaurant} />
                 ))}
             </div>
-            <div className='restaurant-count'>{restaurants.length} {restaurants.length === 1 ? 'restaurant' : 'restaurants'} found</div>
+            <div className='restaurant-count'>{restaurants.length} {restaurants.length === 1 ? 'restaurant' : 'restaurants'} found (out of {numberOfRestaurants})</div>
         </>
     )
 }
