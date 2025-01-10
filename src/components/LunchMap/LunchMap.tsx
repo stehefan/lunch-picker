@@ -2,7 +2,7 @@ import './LunchMap.css';
 import {
     SplitLayout
 } from '@googlemaps/extended-component-library/react';
-import { AdvancedMarker, ColorScheme, ControlPosition, Map, MapControl, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { AdvancedMarker, ControlPosition, Map, MapControl, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { ZoomSettings } from '../../types/App';
 import { Location, Restaurant } from '../../types/Place';
